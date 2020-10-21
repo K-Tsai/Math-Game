@@ -1,6 +1,10 @@
 let playing= false;
 let score;
 let time;
+let action;
+let correctAnswer;
+
+console.log(correctAnswer);
 //if we click on the start/reset
 document.getElementById("startreset").onclick=
 function () {
@@ -19,17 +23,41 @@ function () {
     generateQA()
   }
 }
-    //generate new Q&A
+for (let i = 1; i <5; i++) {
+  document.getElementById("box" + i).onclick = 
+  function() {
+    if(playing == true) {
+      if(this.innerHTML == correctAnswer) {
+        score ++;
+        document.getElementById("scorevalue").innerHTML = score;
+        hide("wrong");
+        show("correct");
+        setTimeout(function(){
+          hide("correct");
+        },1000)
+        generateQA();
+      } else {
+        if(score == 0) {
+          score = 0
+          hide("correct");
+          show("wrong");
+          setTimeout(function(){
+            hide("wrong");
+          },1000)
+        } else {
+          score --;
+          document.getElementById("scorevalue").innerHTML = score;
+          hide("correct");
+          show("wrong");
+          setTimeout(function(){
+            hide("wrong");
+          },1000)
+        }
+      }
+    }
+  } 
+}
 
-  //if we click on answer box
-    //if we are playing
-      //correct?
-        //yes
-          //increase score 
-          //show correct box for 1 second
-          //generate new Q&A
-        //no
-          //show try again box for 1 second
 function startCountdown() {
   action = setInterval(function() {
     time -= 1; //reduce time by 1sec in loops
@@ -70,18 +98,20 @@ function setAnswer(Id) {
 function generateQA() {
   let x = Math.round((Math.random() * 9) + 1);
   let y = Math.round((Math.random() * 9) + 1);
-  let correctAnswer = x * y;
+  correctAnswer = x * y;
   document.getElementById("question").innerHTML= x + "x" + y;
   let position = Math.floor((Math.random() * 3) + 1);
   document.getElementById("box" + position).innerHTML= correctAnswer; //fill one box with correct answer
+  let answers = [correctAnswer];
   for (let i = 1; i < 5; i++) {
     if (i !== position) {
       let wrongAnswer;
       do {
         wrongAnswer = Math.round((Math.random() * 9) + 1) * Math.round((Math.random() * 9) + 1);
       }
-      while(wrongAnswer == correctAnswer) 
+      while(answers.indexOf(wrongAnswer) > -1) 
       document.getElementById("box" + i).innerHTML=wrongAnswer;
+      answers.push(wrongAnswer);
     }
   }
 }
